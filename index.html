@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主角成长手册</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --mist-blue: #7B9EAE;
+            --mist-blue-light: #B8D4E3;
+            --mist-blue-dark: #5A7A8A;
+            --warm-orange: #E8A87C;
+            --dark-purple: #5D4E6D;
+            --bg-primary: #F7F9FA;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #FFD4A3 0%, #7B9EAE 50%, #5D4E6D 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px 24px;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .logo {
+            font-size: 14px;
+            letter-spacing: 4px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 16px;
+            letter-spacing: 8px;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .description {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            line-height: 2;
+        }
+        
+        .chapters {
+            margin-top: 40px;
+        }
+        
+        .chapter-card {
+            background: rgba(255,255,255,0.95);
+            color: var(--dark-purple);
+            padding: 24px 32px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+        }
+        
+        .chapter-label {
+            font-size: 13px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .chapter-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .chapter-desc {
+            font-size: 14px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            font-size: 13px;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 36px;
+            }
+            .subtitle {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">PROTAGONIST GROWTH</div>
+        <h1>主角成长手册</h1>
+        <p class="subtitle">带轻游戏感的自我成长体验</p>
+        
+        <div class="description">
+            以书籍知识为成长骨架<br>
+            结合动漫与电影式的画面感<br>
+            用治愈、细腻、带一点梦幻轻奇幻的方式<br>
+            陪伴你一点点成长
+        </div>
+        
+        <div class="chapters">
+            <a href="chapter-01-restart.html" class="chapter-card">
+                <div class="chapter-label">第 1 话</div>
+                <div class="chapter-title">重新开始</div>
+                <div class="chapter-desc">人生是可以存档的游戏</div>
+            </a>
+        </div>
+        
+        <div class="footer">
+            更多章节 · 正在创作中
+        </div>
+    </div>
+</body>
+</html>
