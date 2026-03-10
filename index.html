@@ -5,515 +5,572 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>主角成长手册 · 第1话 重新开始</title>
     
-    <!-- GSAP + ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
-    <!-- Howler.js for audio -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --mist-blue: #7B9EAE;
-            --mist-blue-light: #B8D4E3;
             --mist-blue-dark: #5A7A8A;
             --warm-orange: #E8A87C;
-            --warm-orange-light: #F5D5C0;
             --dark-purple: #5D4E6D;
-            --bg-primary: #F7F9FA;
-            --bg-secondary: #EDF2F5;
-            --text-primary: #2C3E50;
-            --text-secondary: #5D6D7E;
         }
         
-        html { overflow-x: hidden; }
+        html, body {
+            overflow-x: hidden;
+            background: #000;
+        }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            color: white;
             line-height: 1.8;
-            overflow-x: hidden;
         }
         
-        .story-container { position: relative; }
-        
-        .scene {
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 24px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .content-layer {
-            position: relative;
-            z-index: 10;
-            max-width: 680px;
-            width: 100%;
-        }
-        
-        /* 第1页：封面 */
-        #scene-1 {
-            background: linear-gradient(135deg, #FFD4A3 0%, #7B9EAE 50%, #5D4E6D 100%);
-        }
-        
-        .cover-content { text-align: center; color: white; }
-        
-        .chapter-label {
-            font-size: 14px;
-            letter-spacing: 4px;
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-        
-        .main-title {
-            font-size: 48px;
-            font-weight: 300;
-            margin-bottom: 16px;
-            letter-spacing: 8px;
-        }
-        
-        .subtitle { font-size: 20px; font-weight: 300; opacity: 0.9; margin-bottom: 40px; }
-        
-        .quote-box {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 16px;
-            margin: 40px auto;
-            border: 1px solid rgba(255,255,255,0.2);
-            max-width: 600px;
-        }
-        
-        .quote-text { font-size: 16px; line-height: 2; font-style: italic; }
-        
-        /* 第2页：困境 */
-        #scene-2 { background: var(--bg-secondary); }
-        
-        .story-card {
-            background: white;
-            border-radius: 24px;
-            padding: 48px 36px;
-            box-shadow: 0 4px 24px rgba(123, 158, 174, 0.1);
-        }
-        
-        .page-title {
-            font-size: 28px;
-            font-weight: 400;
-            color: var(--mist-blue-dark);
-            margin-bottom: 36px;
-            text-align: center;
-        }
-        
-        .story-text {
-            font-size: 17px;
-            line-height: 2.2;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-        
-        .highlight-box {
-            background: linear-gradient(135deg, var(--mist-blue-light), var(--warm-orange-light));
-            padding: 28px 32px;
-            border-radius: 16px;
-            margin: 36px 0;
-            text-align: center;
-        }
-        
-        .highlight-text { font-size: 20px; font-weight: 500; color: var(--dark-purple); }
-        
-        /* 第3页：动漫共鸣 */
-        #scene-3 {
-            background: linear-gradient(180deg, #2C3E50 0%, #5D4E6D 50%, #7B9EAE 100%);
-            color: white;
-        }
-        
-        .anime-content { text-align: center; max-width: 680px; }
-        .anime-title { font-size: 26px; font-weight: 300; margin-bottom: 40px; }
-        .anime-text { font-size: 17px; line-height: 2.2; margin-bottom: 28px; }
-        
-        .anime-highlight {
-            background: rgba(255,255,255,0.1);
-            padding: 32px;
-            border-radius: 16px;
-            margin: 40px 0;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        
-        /* 第4页：书籍知识 */
-        #scene-4 { background: var(--bg-primary); }
-        
-        .book-section {
-            display: flex;
-            align-items: flex-start;
-            gap: 32px;
-            margin: 36px 0;
-            flex-wrap: wrap;
-        }
-        
-        .book-card {
-            background: linear-gradient(135deg, #F5F0E8, #E8DED0);
-            padding: 28px;
-            border-radius: 12px;
-            min-width: 200px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        
-        .book-icon { font-size: 48px; margin-bottom: 12px; }
-        .book-name { font-size: 16px; font-weight: 600; color: var(--dark-purple); }
-        
-        .book-quote {
-            flex: 1;
-            background: white;
-            padding: 28px 32px;
-            border-radius: 12px;
-            border-left: 4px solid var(--mist-blue);
-        }
-        
-        .book-quote-text { font-size: 18px; font-style: italic; }
-        
-        /* 第5页：互动练习 */
-        #scene-5 {
-            background: linear-gradient(135deg, var(--bg-secondary), var(--mist-blue-light));
-        }
-        
-        .save-game-box {
-            background: white;
-            border-radius: 24px;
-            padding: 48px 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 8px 32px rgba(123, 158, 174, 0.15);
-        }
-        
-        .save-game-title { font-size: 24px; color: var(--mist-blue-dark); margin-bottom: 16px; text-align: center; }
-        
-        .input-group { margin-bottom: 28px; }
-        .input-label { font-size: 15px; color: var(--text-secondary); margin-bottom: 10px; display: block; }
-        
-        .input-field {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid var(--bg-secondary);
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: inherit;
-        }
-        
-        .input-field:focus { outline: none; border-color: var(--mist-blue); }
-        
-        .save-hint {
-            background: var(--warm-orange-light);
-            padding: 20px 24px;
-            border-radius: 12px;
-            margin-top: 32px;
-        }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: var(--mist-blue);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary:hover {
-            background: var(--mist-blue-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(123, 158, 174, 0.3);
-        }
-        
-        /* 第6页：小结 */
-        #scene-6 {
-            background: linear-gradient(135deg, #7B9EAE 0%, #E8A87C 100%);
-            color: white;
-        }
-        
-        .summary-content { max-width: 680px; text-align: center; }
-        
-        .checklist {
-            text-align: left;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 32px 40px;
-            border-radius: 16px;
-            margin-bottom: 36px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .checklist-item {
-            font-size: 17px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .checklist-item::before {
-            content: "✓";
-            width: 24px;
-            height: 24px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        
-        .final-quote {
-            font-size: 20px;
-            line-height: 1.9;
-            font-style: italic;
-            margin: 40px 0;
-            padding: 32px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 16px;
-        }
-        
-        .next-chapter {
-            background: rgba(255,255,255,0.95);
-            color: var(--dark-purple);
-            padding: 24px 32px;
-            border-radius: 16px;
-            margin-top: 40px;
+        /* 进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--warm-orange);
+            z-index: 1000;
+            width: 0%;
         }
         
         /* 导航点 */
         .nav-dots {
             position: fixed;
-            right: 24px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
+            z-index: 100;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            z-index: 100;
+            gap: 15px;
         }
         
         .nav-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.3);
             cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
         }
         
-        .nav-dot.active { background: var(--mist-blue); transform: scale(1.3); border-color: white; }
+        .nav-dot.active {
+            background: var(--warm-orange);
+            transform: scale(1.3);
+            border-color: white;
+        }
+        
+        /* 场景容器 */
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* 视差背景层 */
+        .parallax-bg {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            left: -10%;
+            top: -10%;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+        }
+        
+        /* 内容层 */
+        .scene-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        
+        /* 文字样式 */
+        .text-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .chapter-title {
+            font-size: 14px;
+            letter-spacing: 6px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        
+        .main-title {
+            font-size: 56px;
+            font-weight: 300;
+            letter-spacing: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .story-text {
+            font-size: 20px;
+            line-height: 2;
+            max-width: 600px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 300;
+        }
+        
+        .highlight-box {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 700px;
+            margin: 30px auto;
+        }
+        
+        .anime-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+        }
+        
+        /* 场景1: 封面 */
+        #scene-1 .parallax-bg {
+            background: linear-gradient(135deg, #FFD4A3 0%, #7B9EAE 50%, #5D4E6D 100%);
+        }
+        
+        /* 场景2: 困境 */
+        #scene-2 .parallax-bg {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+        
+        /* 场景3: 哪吒 */
+        #scene-3 .parallax-bg {
+            background: linear-gradient(180deg, #2C3E50 0%, #5D4E6D 50%, #7B9EAE 100%);
+        }
+        
+        /* 场景4: 书籍 */
+        #scene-4 .parallax-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ded0 100%);
+        }
+        
+        #scene-4 { color: #2C3E50; }
+        #scene-4 .nav-dot { background: rgba(0,0,0,0.2); }
+        #scene-4 .nav-dot.active { background: var(--mist-blue); }
+        
+        /* 场景5: 互动 */
+        #scene-5 .parallax-bg {
+            background: linear-gradient(135deg, var(--mist-blue) 0%, var(--warm-orange) 100%);
+        }
+        
+        /* 场景6: 结尾 */
+        #scene-6 .parallax-bg {
+            background: linear-gradient(135deg, #7B9EAE 0%, #E8A87C 100%);
+        }
+        
+        /* 输入框 */
+        .input-group {
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .input-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        input {
+            width: 100%;
+            max-width: 500px;
+            padding: 18px 24px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-family: inherit;
+            backdrop-filter: blur(10px);
+        }
+        
+        input::placeholder { color: rgba(255,255,255,0.5); }
+        input:focus { outline: none; border-color: white; background: rgba(255,255,255,0.15); }
+        
+        button {
+            padding: 18px 48px;
+            background: white;
+            color: var(--dark-purple);
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        /* 滚动提示 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
         
         /* 响应式 */
         @media (max-width: 640px) {
-            .main-title { font-size: 36px; }
-            .story-card { padding: 32px 24px; }
-            .book-section { flex-direction: column; }
-            .nav-dots { display: none; }
+            .main-title { font-size: 36px; letter-spacing: 6px; }
+            .anime-title { font-size: 24px; }
+            .story-text { font-size: 17px; }
+            .highlight-box { padding: 24px; margin: 20px; }
         }
     </style>
 </head>
 <body>
+    <!-- 进度条 -->
+    <div class="progress-bar" id="progress"></div>
+    
     <!-- 导航点 -->
     <div class="nav-dots">
-        <div class="nav-dot active" onclick="scrollToScene(0)"></div>
-        <div class="nav-dot" onclick="scrollToScene(1)"></div>
-        <div class="nav-dot" onclick="scrollToScene(2)"></div>
-        <div class="nav-dot" onclick="scrollToScene(3)"></div>
-        <div class="nav-dot" onclick="scrollToScene(4)"></div>
-        <div class="nav-dot" onclick="scrollToScene(5)"></div>
+        <div class="nav-dot active" onclick="scrollTo(0)"></div>
+        <div class="nav-dot" onclick="scrollTo(1)"></div>
+        <div class="nav-dot" onclick="scrollTo(2)"></div>
+        <div class="nav-dot" onclick="scrollTo(3)"></div>
+        <div class="nav-dot" onclick="scrollTo(4)"></div>
+        <div class="nav-dot" onclick="scrollTo(5)"></div>
     </div>
 
-    <div class="story-container">
-        <!-- 第1页：封面 -->
-        <section class="scene" id="scene-1">
-            <div class="content-layer">
-                <div class="cover-content">
-                    <div class="chapter-label">主角成长手册 · 第1话</div>
-                    <h1 class="main-title">重新开始</h1>
-                    <p class="subtitle">人生是可以存档的游戏</p>
-                    <div class="quote-box">
-                        <p class="quote-text">我们总觉得，失败了就是"完了"。<br><br>游戏里最珍贵的不是从头完美通关，<br>而是死了无数次后，依然选择"重新开始"的那个按钮。</p>
-                    </div>
-                </div>
+    <!-- 场景1: 封面 -->
+    <section class="scene" id="scene-1">
+        <div class="parallax-bg"></div>
+        <div class="scene-content">
+            <div class="chapter-title text-reveal">主角成长手册 · 第1话</div>
+            <h1 class="main-title text-reveal">重新开始</h1>
+            <p class="subtitle text-reveal">人生是可以存档的游戏</p>
+            <div class="highlight-box text-reveal">
+                <p class="story-text">我们总觉得，失败了就是"完了"。<br><br>
+                但你知道吗？游戏里最珍贵的不是从头完美通关，<br>
+                而是死了无数次之后，依然选择"重新开始"的那个按钮。</p>
             </div>
-        </section>
+            <div class="scroll-hint">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M12 5v14M19 12l-7 7-7-7"/>
+                </svg>
+            </div>
+        </div>
+    </section>
 
-        <!-- 第2页：困境 -->
-        <section class="scene" id="scene-2">
-            <div class="content-layer">
-                <div class="story-card">
-                    <h2 class="page-title">你是不是也有过这样的时刻</h2>
-                    <p class="story-text">凌晨两点，你躺在床上刷手机。</p>
-                    <p class="story-text">明明明天还要早起，但你就是不想结束这一天。</p>
-                    <p class="story-text">因为一旦闭上眼睛，明天就会到来——而明天，又是和今天一样的一天。</p>
-                    <div class="highlight-box">
-                        <p class="highlight-text">"我已经这样了，<br>还能怎么重新开始？"</p>
-                    </div>
-                </div>
+    <!-- 场景2: 困境 (固定滚动) -->
+    <section class="scene" id="scene-2">
+        <div class="parallax-bg"></div>
+        <div class="scene-content">
+            <h2 class="anime-title text-reveal">你是不是也有过<br>这样的时刻</h2>
+            <p class="story-text text-reveal">凌晨两点，你躺在床上刷手机。</p>
+            <p class="story-text text-reveal">明明明天还要早起，但你就是不想结束这一天。</p>
+            <div class="highlight-box text-reveal">
+                <p style="font-size: 24px; font-style: italic;">"我已经这样了，<br>还能怎么重新开始？"</p>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 第3页：动漫共鸣 -->
-        <section class="scene" id="scene-3">
-            <div class="content-layer">
-                <div class="anime-content">
-                    <h2 class="anime-title">哪吒说"我命由我不由天"之前</h2>
-                    <p class="anime-text">我们都记得那句燃爆的台词。</p>
-                    <p class="anime-text">却忘了说这句话之前——他也曾一个人坐在海边，觉得自己是个"怪物"，觉得没人懂他，想过就这样认命算了。</p>
-                    
-                    <div class="anime-highlight">
-                        <p>主角的成长不是一蹴而就的。<br>是跌倒，爬起，再跌倒，再爬起。<br>是带着所有的伤痕和不完美，还是决定往前走一步。</p>
-                    </div>
-                </div>
+    <!-- 场景3: 哪吒 (固定滚动) -->
+    <section class="scene" id="scene-3">
+        <div class="parallax-bg"></div>
+        <div class="scene-content">
+            <h2 class="anime-title text-reveal">哪吒说<br>"我命由我不由天"<br>之前</h2>
+            <p class="story-text text-reveal">我们都记得那句燃爆的台词。</p>
+            <p class="story-text text-reveal">却忘了说这句话之前——<br>他也曾一个人坐在海边，觉得自己是个"怪物"，<br>觉得没人懂他，想过就这样认命算了。</p>
+            <div class="highlight-box text-reveal">
+                <p class="story-text">主角的成长从来不是一蹴而就的。<br><br>
+                是跌倒，爬起，再跌倒，再爬起。<br><br>
+                是带着所有的伤痕和不完美，<br>还是决定往前走一步。</p>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 第4页：书籍知识 -->
-        <section class="scene" id="scene-4">
-            <div class="content-layer">
-                <div class="story-card">
-                    <h2 class="page-title">一本书告诉我的事</h2>
-                    
-                    <div class="book-section">
-                        <div class="book-card">
-                            <div class="book-icon">📚</div>
-                            <div class="book-name">掌控习惯</div>
-                        </div>
-                        <div class="book-quote">
-                            <p class="book-quote-text">"习惯养成的关键不是完美执行，而是持续出现。"</p>
-                        </div>
-                    </div>
-                    
-                    <p class="story-text"><strong>被讨厌的勇气</strong> 说："你的人生不是由过去决定的，是由你现在的选择决定的。"</p>
-                </div>
+    <!-- 场景4: 书籍 -->
+    <section class="scene" id="scene-4">
+        <div class="parallax-bg"></div>
+        <div class="scene-content">
+            <h2 class="anime-title text-reveal" style="color: var(--dark-purple);">一本书告诉我的事</h2>
+            <div class="highlight-box text-reveal" style="background: white; color: #2C3E50;">
+                <p style="font-size: 48px; margin-bottom: 20px;">📚</p>
+                <p style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">掌控习惯</p>
+                <p style="font-size: 18px; font-style: italic;">"习惯养成的关键不是完美执行，<br>而是持续出现。"</p>
             </div>
-        </section>
+            <p class="story-text text-reveal" style="color: var(--text-secondary);">
+                <strong>被讨厌的勇气</strong> 说：<br>
+                "你的人生不是由过去决定的，<br>是由你现在的选择决定的。"
+            </p>
+        </div>
+    </section>
 
-        <!-- 第5页：互动练习 -->
-        <section class="scene" id="scene-5">
-            <div class="content-layer">
-                <div class="save-game-box">
-                    <h2 class="save-game-title">💾 现在，存一个档</h2>
-                    
-                    <div class="input-group">
-                        <label class="input-label">📍 你的存档点</label>
-                        <input type="text" class="input-field" id="save-point" placeholder="我想重新开始__________">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label class="input-label">🔄 这次我换个方式</label>
-                        <input type="text" class="input-field" id="new-way" placeholder="这次我要__________">
-                    </div>
-                    
-                    <button class="btn-primary" onclick="saveProgress()">完成存档</button>
-                    
-                    <div class="save-hint">
-                        <strong>💡 小提示</strong>：不用写得很大很完美。"重新开始运动"可以只是"今天做5分钟拉伸"。
-                    </div>
-                </div>
+    <!-- 场景5: 互动 (固定滚动) -->
+    <section class="scene" id="scene-5">
+        <div class="parallax-bg"></div>
+        <div class="scene-content">
+            <h2 class="anime-title text-reveal">💾 现在，存一个档</h2>
+            <div class="input-group">
+                <label class="input-label">📍 你的存档点</label>
+                <input type="text" id="save1" placeholder="我想重新开始__________">
             </div>
-        </section>
+            <div class="input-group">
+                <label class="input-label">🔄 这次我换个方式</label>
+                <input type="text" id="save2" placeholder="这次我要__________">
+            </div>
+            <button onclick="save()">完成存档</button>
+        </div>
+    </section>
 
-        <!-- 第6页：小结 -->
-        <section class="scene" id="scene-6">
-            <div class="content-layer">
-                <div class="summary-content">
-                    <h2 class="page-title" style="color: white;">这一话的小结</h2>
-                    
-                    <div class="checklist">
-                        <div class="checklist-item">重新开始不是失败，是选择继续</div>
-                        <div class="checklist-item">主角的成长都带着伤痕</div>
-                        <div class="checklist-item">你的人生由现在的选择决定</div>
-                        <div class="checklist-item">存档可以很小，但开始了就是不一样</div>
-                    </div>
-                    
-                    <div class="final-quote">
-                        "你不需要变成另一个人才能重新开始。<br>你只需要选择，不让过去的定义，决定你的下一步。"
-                    </div>
-                </div>
+    <!-- 场景6: 结尾 -->
+    <section class="scene" id="scene-6">
+        <div class="parallax-bg"></div>
+        <div class="scene-content">
+            <h2 class="anime-title text-reveal">这一话的小结</h2>
+            <div class="highlight-box text-reveal">
+                <p class="story-text" style="text-align: left;">
+                    ✓ 重新开始不是失败，是选择继续<br><br>
+                    ✓ 主角的成长都带着伤痕<br><br>
+                    ✓ 你的人生由现在的选择决定<br><br>
+                    ✓ 存档可以很小，但开始了就是不一样
+                </p>
             </div>
-        </section>
-    </div>
+            <div class="highlight-box text-reveal">
+                <p style="font-size: 22px; font-style: italic; line-height: 1.8;">
+                    "你不需要变成另一个人才能重新开始。<br>
+                    你只需要选择，不让过去的定义，<br>决定你的下一步。"
+                </p>
+            </div>
+            <div style="margin-top: 40px; opacity: 0;" class="text-reveal">
+                <p style="font-size: 14px; opacity: 0.7; letter-spacing: 2px;">下一话预告</p>
+                <p style="font-size: 20px; margin-top: 10px;">第2话 · 找回主角感</p>
+                <p style="font-size: 14px; opacity: 0.7; margin-top: 5px;">你不是NPC，你是自己故事的主角。</p>
+            </div>
+        </div>
+    </section>
 
     <script>
-        // 滚动到指定场景
-        function scrollToScene(index) {
-            const scenes = document.querySelectorAll('.scene');
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // 进度条
+        gsap.to('#progress', {
+            width: '100%',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.3
+            }
+        });
+        
+        // 导航点更新
+        const scenes = document.querySelectorAll('.scene');
+        const dots = document.querySelectorAll('.nav-dot');
+        
+        scenes.forEach((scene, i) => {
+            ScrollTrigger.create({
+                trigger: scene,
+                start: 'top center',
+                end: 'bottom center',
+                onEnter: () => updateDot(i),
+                onEnterBack: () => updateDot(i)
+            });
+        });
+        
+        function updateDot(index) {
+            dots.forEach(d => d.classList.remove('active'));
+            dots[index]?.classList.add('active');
+        }
+        
+        function scrollTo(index) {
             scenes[index].scrollIntoView({ behavior: 'smooth' });
         }
         
-        // 更新导航点
-        function updateNavDots() {
-            const scenes = document.querySelectorAll('.scene');
-            const dots = document.querySelectorAll('.nav-dot');
-            
-            scenes.forEach((scene, index) => {
-                const rect = scene.getBoundingClientRect();
-                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-                    dots.forEach(d => d.classList.remove('active'));
-                    dots[index]?.classList.add('active');
-                }
-            });
-        }
+        // 场景动画配置
+        const sceneConfigs = [
+            // 场景1: 封面
+            {
+                trigger: '#scene-1',
+                pin: false,
+                elements: [
+                    { el: '.chapter-title', from: { y: 30, opacity: 0 }, to: { y: 0, opacity: 0.8 }, start: 'top 80%' },
+                    { el: '.main-title', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 70%' },
+                    { el: '.subtitle', from: { y: 30, opacity: 0 }, to: { y: 0, opacity: 0.9 }, start: 'top 60%' },
+                    { el: '.highlight-box', from: { y: 50, opacity: 0, scale: 0.95 }, to: { y: 0, opacity: 1, scale: 1 }, start: 'top 50%' },
+                    { el: '.scroll-hint', from: { opacity: 0 }, to: { opacity: 0.7 }, start: 'top 30%' }
+                ]
+            },
+            // 场景2: 困境 - 固定滚动
+            {
+                trigger: '#scene-2',
+                pin: true,
+                scrub: 1,
+                elements: [
+                    { el: '.anime-title', from: { y: 100, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0, end: 0.2 },
+                    { el: '.story-text:nth-of-type(1)', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.1, end: 0.3 },
+                    { el: '.story-text:nth-of-type(2)', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.2, end: 0.4 },
+                    { el: '.highlight-box', from: { y: 80, opacity: 0, scale: 0.9 }, to: { y: 0, opacity: 1, scale: 1 }, start: 0.4, end: 0.7 },
+                    { el: '.scene-content', from: {}, to: { opacity: 0 }, start: 0.8, end: 1 }
+                ]
+            },
+            // 场景3: 哪吒 - 固定滚动
+            {
+                trigger: '#scene-3',
+                pin: true,
+                scrub: 1,
+                elements: [
+                    { el: '.anime-title', from: { y: 100, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0, end: 0.2 },
+                    { el: '.story-text:nth-of-type(1)', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.15, end: 0.35 },
+                    { el: '.story-text:nth-of-type(2)', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.3, end: 0.5 },
+                    { el: '.highlight-box', from: { y: 80, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.5, end: 0.75 },
+                    { el: '.scene-content', from: {}, to: { opacity: 0 }, start: 0.85, end: 1 }
+                ]
+            },
+            // 场景4: 书籍
+            {
+                trigger: '#scene-4',
+                pin: false,
+                elements: [
+                    { el: '.anime-title', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 70%' },
+                    { el: '.highlight-box', from: { y: 80, opacity: 0, scale: 0.9 }, to: { y: 0, opacity: 1, scale: 1 }, start: 'top 60%' },
+                    { el: '.story-text', from: { y: 40, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 50%' }
+                ]
+            },
+            // 场景5: 互动 - 固定滚动
+            {
+                trigger: '#scene-5',
+                pin: true,
+                scrub: 1,
+                elements: [
+                    { el: '.anime-title', from: { y: 80, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0, end: 0.2 },
+                    { el: '.input-group:nth-of-type(1)', from: { y: 40, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.2, end: 0.4 },
+                    { el: '.input-group:nth-of-type(2)', from: { y: 40, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.35, end: 0.55 },
+                    { el: 'button', from: { y: 30, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 0.5, end: 0.7 }
+                ]
+            },
+            // 场景6: 结尾
+            {
+                trigger: '#scene-6',
+                pin: false,
+                elements: [
+                    { el: '.anime-title', from: { y: 50, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 70%' },
+                    { el: '.highlight-box:nth-of-type(1)', from: { y: 60, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 60%' },
+                    { el: '.highlight-box:nth-of-type(2)', from: { y: 60, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 50%' },
+                    { el: '.scene-content > div:last-child', from: { y: 40, opacity: 0 }, to: { y: 0, opacity: 1 }, start: 'top 40%' }
+                ]
+            }
+        ];
         
-        window.addEventListener('scroll', updateNavDots);
+        // 应用动画
+        sceneConfigs.forEach(config => {
+            if (config.pin) {
+                // 固定场景（像The Boat一样）
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: config.trigger,
+                        start: 'top top',
+                        end: '+=150%',
+                        pin: true,
+                        scrub: config.scrub || 1,
+                        anticipatePin: 1
+                    }
+                });
+                
+                config.elements.forEach(el => {
+                    tl.fromTo(`${config.trigger} ${el.el}`, 
+                        el.from,
+                        { ...el.to, duration: el.end - el.start },
+                        el.start
+                    );
+                });
+            } else {
+                // 普通滚动场景
+                config.elements.forEach(el => {
+                    gsap.fromTo(`${config.trigger} ${el.el}`,
+                        el.from,
+                        {
+                            ...el.to,
+                            scrollTrigger: {
+                                trigger: config.trigger,
+                                start: el.start,
+                                toggleActions: 'play none none reverse'
+                            }
+                        }
+                    );
+                });
+            }
+        });
         
-        // 保存进度
-        function saveProgress() {
+        // 视差背景效果
+        scenes.forEach((scene, i) => {
+            const bg = scene.querySelector('.parallax-bg');
+            if (bg && !sceneConfigs[i].pin) {
+                gsap.to(bg, {
+                    yPercent: 20,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: scene,
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: true
+                    }
+                });
+            }
+        });
+        
+        // 保存功能
+        function save() {
             const data = {
-                savePoint: document.getElementById('save-point').value,
-                newWay: document.getElementById('new-way').value,
+                point: document.getElementById('save1').value,
+                way: document.getElementById('save2').value,
                 time: new Date().toISOString()
             };
-            localStorage.setItem('chapter01-restart', JSON.stringify(data));
+            localStorage.setItem('chapter01', JSON.stringify(data));
+            
+            // 动画反馈
+            gsap.to('button', { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1 });
             alert('✅ 已存档！');
         }
         
         // 加载保存的数据
         window.addEventListener('load', () => {
-            const saved = localStorage.getItem('chapter01-restart');
+            const saved = localStorage.getItem('chapter01');
             if (saved) {
                 const data = JSON.parse(saved);
-                document.getElementById('save-point').value = data.savePoint || '';
-                document.getElementById('new-way').value = data.newWay || '';
+                document.getElementById('save1').value = data.point || '';
+                document.getElementById('save2').value = data.way || '';
             }
         });
-        
-        // GSAP 动画（简化版）
-        if (typeof gsap !== 'undefined') {
-            gsap.registerPlugin(ScrollTrigger);
-            
-            // 为每个场景添加淡入动画
-            document.querySelectorAll('.scene').forEach((scene, index) => {
-                gsap.fromTo(scene.querySelectorAll('.story-text, .anime-text'), 
-                    { opacity: 0, y: 20 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.6,
-                        stagger: 0.1,
-                        scrollTrigger: {
-                            trigger: scene,
-                            start: 'top 80%',
-                            toggleActions: 'play none none reverse'
-                        }
-                    }
-                );
-            });
-        }
     </script>
 </body>
 </html>
