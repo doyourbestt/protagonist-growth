@@ -2,8 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>主角成长手册 · 第1话 重新开始</title>
+    
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Howler.js for audio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,18 +20,25 @@
             --mist-blue-light: #B8D4E3;
             --mist-blue-dark: #5A7A8A;
             --warm-orange: #E8A87C;
+            --warm-orange-light: #F5D5C0;
             --dark-purple: #5D4E6D;
+            --bg-primary: #F7F9FA;
             --bg-secondary: #EDF2F5;
+            --text-primary: #2C3E50;
             --text-secondary: #5D6D7E;
         }
         
-        html { scroll-behavior: smooth; }
+        html { overflow-x: hidden; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.8;
             overflow-x: hidden;
         }
+        
+        .story-container { position: relative; }
         
         .scene {
             min-height: 100vh;
@@ -34,34 +48,56 @@
             justify-content: center;
             align-items: center;
             padding: 40px 24px;
+            position: relative;
+            overflow: hidden;
         }
         
-        .content { max-width: 680px; width: 100%; }
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            max-width: 680px;
+            width: 100%;
+        }
         
-        /* 第1页 */
+        /* 第1页：封面 */
         #scene-1 {
             background: linear-gradient(135deg, #FFD4A3 0%, #7B9EAE 50%, #5D4E6D 100%);
-            color: white;
-            text-align: center;
         }
         
-        .chapter-label { font-size: 14px; letter-spacing: 4px; opacity: 0.8; margin-bottom: 20px; }
-        .main-title { font-size: 48px; font-weight: 300; margin-bottom: 16px; letter-spacing: 8px; }
-        .subtitle { font-size: 20px; opacity: 0.9; margin-bottom: 40px; }
+        .cover-content { text-align: center; color: white; }
+        
+        .chapter-label {
+            font-size: 14px;
+            letter-spacing: 4px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .main-title {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 16px;
+            letter-spacing: 8px;
+        }
+        
+        .subtitle { font-size: 20px; font-weight: 300; opacity: 0.9; margin-bottom: 40px; }
         
         .quote-box {
             background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 16px;
+            margin: 40px auto;
             border: 1px solid rgba(255,255,255,0.2);
             max-width: 600px;
-            margin: 0 auto;
         }
         
-        /* 第2页 */
+        .quote-text { font-size: 16px; line-height: 2; font-style: italic; }
+        
+        /* 第2页：困境 */
         #scene-2 { background: var(--bg-secondary); }
         
-        .card {
+        .story-card {
             background: white;
             border-radius: 24px;
             padding: 48px 36px;
@@ -70,50 +106,53 @@
         
         .page-title {
             font-size: 28px;
+            font-weight: 400;
             color: var(--mist-blue-dark);
             margin-bottom: 36px;
             text-align: center;
         }
         
-        .text {
+        .story-text {
             font-size: 17px;
+            line-height: 2.2;
             color: var(--text-secondary);
             margin-bottom: 24px;
         }
         
-        .highlight {
-            background: linear-gradient(135deg, var(--mist-blue-light), #F5D5C0);
+        .highlight-box {
+            background: linear-gradient(135deg, var(--mist-blue-light), var(--warm-orange-light));
             padding: 28px 32px;
             border-radius: 16px;
             margin: 36px 0;
             text-align: center;
         }
         
-        .highlight p { font-size: 20px; color: var(--dark-purple); }
+        .highlight-text { font-size: 20px; font-weight: 500; color: var(--dark-purple); }
         
-        /* 第3页 - 哪吒 */
+        /* 第3页：动漫共鸣 */
         #scene-3 {
             background: linear-gradient(180deg, #2C3E50 0%, #5D4E6D 50%, #7B9EAE 100%);
             color: white;
-            text-align: center;
         }
         
-        .anime-title { font-size: 26px; margin-bottom: 40px; }
-        .anime-text { font-size: 17px; margin-bottom: 28px; }
+        .anime-content { text-align: center; max-width: 680px; }
+        .anime-title { font-size: 26px; font-weight: 300; margin-bottom: 40px; }
+        .anime-text { font-size: 17px; line-height: 2.2; margin-bottom: 28px; }
         
-        .anime-box {
+        .anime-highlight {
             background: rgba(255,255,255,0.1);
             padding: 32px;
             border-radius: 16px;
+            margin: 40px 0;
             border: 1px solid rgba(255,255,255,0.15);
-            margin-top: 40px;
         }
         
-        /* 第4页 */
-        #scene-4 { background: white; }
+        /* 第4页：书籍知识 */
+        #scene-4 { background: var(--bg-primary); }
         
-        .book-box {
+        .book-section {
             display: flex;
+            align-items: flex-start;
             gap: 32px;
             margin: 36px 0;
             flex-wrap: wrap;
@@ -125,11 +164,13 @@
             border-radius: 12px;
             min-width: 200px;
             text-align: center;
+            flex-shrink: 0;
         }
         
         .book-icon { font-size: 48px; margin-bottom: 12px; }
+        .book-name { font-size: 16px; font-weight: 600; color: var(--dark-purple); }
         
-        .quote {
+        .book-quote {
             flex: 1;
             background: white;
             padding: 28px 32px;
@@ -137,32 +178,46 @@
             border-left: 4px solid var(--mist-blue);
         }
         
-        /* 第5页 */
+        .book-quote-text { font-size: 18px; font-style: italic; }
+        
+        /* 第5页：互动练习 */
         #scene-5 {
             background: linear-gradient(135deg, var(--bg-secondary), var(--mist-blue-light));
         }
         
-        .save-box {
+        .save-game-box {
             background: white;
             border-radius: 24px;
             padding: 48px 40px;
+            max-width: 600px;
+            width: 100%;
             box-shadow: 0 8px 32px rgba(123, 158, 174, 0.15);
         }
         
-        .save-title { font-size: 24px; color: var(--mist-blue-dark); margin-bottom: 32px; text-align: center; }
+        .save-game-title { font-size: 24px; color: var(--mist-blue-dark); margin-bottom: 16px; text-align: center; }
         
         .input-group { margin-bottom: 28px; }
         .input-label { font-size: 15px; color: var(--text-secondary); margin-bottom: 10px; display: block; }
         
-        input {
+        .input-field {
             width: 100%;
             padding: 16px 20px;
             border: 2px solid var(--bg-secondary);
             border-radius: 12px;
             font-size: 16px;
+            font-family: inherit;
         }
         
-        button {
+        .input-field:focus { outline: none; border-color: var(--mist-blue); }
+        
+        .save-hint {
+            background: var(--warm-orange-light);
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-top: 32px;
+        }
+        
+        .btn-primary {
             width: 100%;
             padding: 16px;
             background: var(--mist-blue);
@@ -171,21 +226,31 @@
             border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
+            transition: all 0.3s;
         }
         
-        /* 第6页 */
+        .btn-primary:hover {
+            background: var(--mist-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(123, 158, 174, 0.3);
+        }
+        
+        /* 第6页：小结 */
         #scene-6 {
             background: linear-gradient(135deg, #7B9EAE 0%, #E8A87C 100%);
             color: white;
-            text-align: center;
         }
+        
+        .summary-content { max-width: 680px; text-align: center; }
         
         .checklist {
             text-align: left;
             background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
             padding: 32px 40px;
             border-radius: 16px;
             margin-bottom: 36px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
         .checklist-item {
@@ -209,103 +274,246 @@
             flex-shrink: 0;
         }
         
+        .final-quote {
+            font-size: 20px;
+            line-height: 1.9;
+            font-style: italic;
+            margin: 40px 0;
+            padding: 32px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+        
+        .next-chapter {
+            background: rgba(255,255,255,0.95);
+            color: var(--dark-purple);
+            padding: 24px 32px;
+            border-radius: 16px;
+            margin-top: 40px;
+        }
+        
+        /* 导航点 */
+        .nav-dots {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .nav-dot.active { background: var(--mist-blue); transform: scale(1.3); border-color: white; }
+        
+        /* 响应式 */
         @media (max-width: 640px) {
             .main-title { font-size: 36px; }
-            .card { padding: 32px 24px; }
-            .book-box { flex-direction: column; }
+            .story-card { padding: 32px 24px; }
+            .book-section { flex-direction: column; }
+            .nav-dots { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- 第1页 -->
-    <section class="scene" id="scene-1">
-        <div class="content">
-            <div class="chapter-label">主角成长手册 · 第1话</div>
-            <h1 class="main-title">重新开始</h1>
-            <p class="subtitle">人生是可以存档的游戏</p>
-            <div class="quote-box">
-                <p>我们总觉得，失败了就是"完了"。<br><br>
-                但游戏里最珍贵的不是从头完美通关，<br>
-                而是死了无数次后，依然选择"重新开始"的那个按钮。</p>
-            </div>
-        </div>
-    </section>
+    <!-- 导航点 -->
+    <div class="nav-dots">
+        <div class="nav-dot active" onclick="scrollToScene(0)"></div>
+        <div class="nav-dot" onclick="scrollToScene(1)"></div>
+        <div class="nav-dot" onclick="scrollToScene(2)"></div>
+        <div class="nav-dot" onclick="scrollToScene(3)"></div>
+        <div class="nav-dot" onclick="scrollToScene(4)"></div>
+        <div class="nav-dot" onclick="scrollToScene(5)"></div>
+    </div>
 
-    <!-- 第2页 -->
-    <section class="scene" id="scene-2">
-        <div class="content">
-            <div class="card">
-                <h2 class="page-title">你是不是也有过这样的时刻</h2>
-                <p class="text">凌晨两点，你躺在床上刷手机。</p>
-                <p class="text">明明明天还要早起，但你就是不想结束这一天。</p>
-                <div class="highlight">
-                    <p>"我已经这样了，<br>还能怎么重新开始？"</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 第3页：哪吒 -->
-    <section class="scene" id="scene-3">
-        <div class="content">
-            <h2 class="anime-title">哪吒说"我命由我不由天"之前</h2>
-            <p class="anime-text">我们都记得那句燃爆的台词。</p>
-            <p class="anime-text">却忘了说这句话之前——他也曾一个人坐在海边，觉得自己是个"怪物"，觉得没人懂他，想过就这样认命算了。</p>
-            <div class="anime-box">
-                <p>主角的成长不是一蹴而就的。<br><br>
-                是跌倒，爬起，再跌倒，再爬起。<br><br>
-                是带着所有的伤痕和不完美，还是决定往前走一步。</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 第4页 -->
-    <section class="scene" id="scene-4">
-        <div class="content">
-            <div class="card">
-                <h2 class="page-title">一本书告诉我的事</h2>
-                <div class="book-box">
-                    <div class="book-card">
-                        <div class="book-icon">📚</div>
-                        <div>掌控习惯</div>
-                    </div>
-                    <div class="quote">
-                        <p>"习惯养成的关键不是完美执行，而是持续出现。"</p>
+    <div class="story-container">
+        <!-- 第1页：封面 -->
+        <section class="scene" id="scene-1">
+            <div class="content-layer">
+                <div class="cover-content">
+                    <div class="chapter-label">主角成长手册 · 第1话</div>
+                    <h1 class="main-title">重新开始</h1>
+                    <p class="subtitle">人生是可以存档的游戏</p>
+                    <div class="quote-box">
+                        <p class="quote-text">我们总觉得，失败了就是"完了"。<br><br>游戏里最珍贵的不是从头完美通关，<br>而是死了无数次后，依然选择"重新开始"的那个按钮。</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 第5页 -->
-    <section class="scene" id="scene-5">
-        <div class="content">
-            <div class="save-box">
-                <h2 class="save-title">💾 现在，存一个档</h2>
-                <div class="input-group">
-                    <label class="input-label">📍 你的存档点</label>
-                    <input type="text" placeholder="我想重新开始__________">
+        <!-- 第2页：困境 -->
+        <section class="scene" id="scene-2">
+            <div class="content-layer">
+                <div class="story-card">
+                    <h2 class="page-title">你是不是也有过这样的时刻</h2>
+                    <p class="story-text">凌晨两点，你躺在床上刷手机。</p>
+                    <p class="story-text">明明明天还要早起，但你就是不想结束这一天。</p>
+                    <p class="story-text">因为一旦闭上眼睛，明天就会到来——而明天，又是和今天一样的一天。</p>
+                    <div class="highlight-box">
+                        <p class="highlight-text">"我已经这样了，<br>还能怎么重新开始？"</p>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label class="input-label">🔄 这次我换个方式</label>
-                    <input type="text" placeholder="这次我要__________">
-                </div>
-                <button onclick="alert('已存档！')">完成存档</button>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 第6页 -->
-    <section class="scene" id="scene-6">
-        <div class="content">
-            <h2 class="page-title" style="color: white;">这一话的小结</h2>
-            <div class="checklist">
-                <div class="checklist-item">重新开始不是失败，是选择继续</div>
-                <div class="checklist-item">主角的成长都带着伤痕</div>
-                <div class="checklist-item">你的人生由现在的选择决定</div>
-                <div class="checklist-item">存档可以很小，但开始了就是不一样</div>
+        <!-- 第3页：动漫共鸣 -->
+        <section class="scene" id="scene-3">
+            <div class="content-layer">
+                <div class="anime-content">
+                    <h2 class="anime-title">哪吒说"我命由我不由天"之前</h2>
+                    <p class="anime-text">我们都记得那句燃爆的台词。</p>
+                    <p class="anime-text">却忘了说这句话之前——他也曾一个人坐在海边，觉得自己是个"怪物"，觉得没人懂他，想过就这样认命算了。</p>
+                    
+                    <div class="anime-highlight">
+                        <p>主角的成长不是一蹴而就的。<br>是跌倒，爬起，再跌倒，再爬起。<br>是带着所有的伤痕和不完美，还是决定往前走一步。</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- 第4页：书籍知识 -->
+        <section class="scene" id="scene-4">
+            <div class="content-layer">
+                <div class="story-card">
+                    <h2 class="page-title">一本书告诉我的事</h2>
+                    
+                    <div class="book-section">
+                        <div class="book-card">
+                            <div class="book-icon">📚</div>
+                            <div class="book-name">掌控习惯</div>
+                        </div>
+                        <div class="book-quote">
+                            <p class="book-quote-text">"习惯养成的关键不是完美执行，而是持续出现。"</p>
+                        </div>
+                    </div>
+                    
+                    <p class="story-text"><strong>被讨厌的勇气</strong> 说："你的人生不是由过去决定的，是由你现在的选择决定的。"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第5页：互动练习 -->
+        <section class="scene" id="scene-5">
+            <div class="content-layer">
+                <div class="save-game-box">
+                    <h2 class="save-game-title">💾 现在，存一个档</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">📍 你的存档点</label>
+                        <input type="text" class="input-field" id="save-point" placeholder="我想重新开始__________">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">🔄 这次我换个方式</label>
+                        <input type="text" class="input-field" id="new-way" placeholder="这次我要__________">
+                    </div>
+                    
+                    <button class="btn-primary" onclick="saveProgress()">完成存档</button>
+                    
+                    <div class="save-hint">
+                        <strong>💡 小提示</strong>：不用写得很大很完美。"重新开始运动"可以只是"今天做5分钟拉伸"。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第6页：小结 -->
+        <section class="scene" id="scene-6">
+            <div class="content-layer">
+                <div class="summary-content">
+                    <h2 class="page-title" style="color: white;">这一话的小结</h2>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item">重新开始不是失败，是选择继续</div>
+                        <div class="checklist-item">主角的成长都带着伤痕</div>
+                        <div class="checklist-item">你的人生由现在的选择决定</div>
+                        <div class="checklist-item">存档可以很小，但开始了就是不一样</div>
+                    </div>
+                    
+                    <div class="final-quote">
+                        "你不需要变成另一个人才能重新开始。<br>你只需要选择，不让过去的定义，决定你的下一步。"
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 滚动到指定场景
+        function scrollToScene(index) {
+            const scenes = document.querySelectorAll('.scene');
+            scenes[index].scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 更新导航点
+        function updateNavDots() {
+            const scenes = document.querySelectorAll('.scene');
+            const dots = document.querySelectorAll('.nav-dot');
+            
+            scenes.forEach((scene, index) => {
+                const rect = scene.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    dots.forEach(d => d.classList.remove('active'));
+                    dots[index]?.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateNavDots);
+        
+        // 保存进度
+        function saveProgress() {
+            const data = {
+                savePoint: document.getElementById('save-point').value,
+                newWay: document.getElementById('new-way').value,
+                time: new Date().toISOString()
+            };
+            localStorage.setItem('chapter01-restart', JSON.stringify(data));
+            alert('✅ 已存档！');
+        }
+        
+        // 加载保存的数据
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('chapter01-restart');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('save-point').value = data.savePoint || '';
+                document.getElementById('new-way').value = data.newWay || '';
+            }
+        });
+        
+        // GSAP 动画（简化版）
+        if (typeof gsap !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // 为每个场景添加淡入动画
+            document.querySelectorAll('.scene').forEach((scene, index) => {
+                gsap.fromTo(scene.querySelectorAll('.story-text, .anime-text'), 
+                    { opacity: 0, y: 20 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.6,
+                        stagger: 0.1,
+                        scrollTrigger: {
+                            trigger: scene,
+                            start: 'top 80%',
+                            toggleActions: 'play none none reverse'
+                        }
+                    }
+                );
+            });
+        }
+    </script>
 </body>
 </html>
