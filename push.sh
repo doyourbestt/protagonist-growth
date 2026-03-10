@@ -24,7 +24,7 @@ git commit -m "$COMMIT_MSG"
 
 echo ""
 echo "🚀 推送到GitHub..."
-git push origin main
+git push origin HEAD:master
 
 if [ $? -eq 0 ]; then
     echo ""
